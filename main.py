@@ -44,7 +44,7 @@ class record(ndb.Model):
 	resultado = ndb.StringProperty()
 
 JINJA_ENVIRONMENT = jinja2.Environment(
-	loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'html')),
+	loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'views')),
 	extensions=['jinja2.ext.autoescape'],
 	autoescape=True)
 
@@ -82,9 +82,9 @@ class MainPage(Handler):
 	# 		dic = diccionario
 	# 		)
 
-class dashBoard:
+class dashBoard(Handler):
 	def get(self):
-		self.render("index.html")
+		self.render('index.html');
 
 config={}
 config['webapp2_extras.sessions'] = {
@@ -92,6 +92,8 @@ config['webapp2_extras.sessions'] = {
 	}
 app = webapp2.WSGIApplication([
 		('/', MainPage),
-		('index.html', dashBoard)
+		('/zapatos.html', MainPage),
+		('/marcas.html', dashBoard),
+		('/index.html', dashBoard)
 	],
 	debug=True,config=config)
