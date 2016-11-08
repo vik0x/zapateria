@@ -86,14 +86,34 @@ class dashBoard(Handler):
 	def get(self):
 		self.render('index.html');
 
+class PageHandler(Handler):
+    def extract_template_name_from_request(self):
+        logging.info('ruta = ' +str(self.request.path_info[1:-5]))
+        return self.request.path_info[1:-5]
+
+    def get(self):
+        template_name = self.extract_template_name_from_request() + '/index.html'
+        logging.info('template name ='+str(template_name))
+        self.render(template_name)
+
+class addHandler(Handler):
+    def extract_template_name_from_request(self):
+        logging.info('ruta = ' +str(self.request.path_info[8:-5]))
+        return self.request.path_info[8:-5]
+
+    def get(self):
+        template_name = self.extract_template_name_from_request() + '/create.html'
+        logging.info('template name ='+str(template_name))
+        self.render(template_name)
+
 config={}
 config['webapp2_extras.sessions'] = {
 	'secret_key':'some-secret-key',
 	}
 app = webapp2.WSGIApplication([
 		('/', MainPage),
-		('/zapatos.html', MainPage),
-		('/marcas.html', dashBoard),
-		('/index.html', dashBoard)
+		('/index.html', MainPage),
+		('/agregar/.*.html',addHandler),
+		('.*.html',PageHandler)
 	],
 	debug=True,config=config)
