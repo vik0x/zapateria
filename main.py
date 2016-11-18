@@ -32,6 +32,7 @@ from datetime import date
 from webob import Request
 
 mail_message= mail.EmailMessage()
+app_mail = "pedidos@v-gutierrez.appspotmail.com"
 
 num = random.randint(1,100)
 nom = ""
@@ -80,7 +81,6 @@ class MailHandler(InboundMailHandler):
         for content_type, pl in mail_message.bodies('text/plain'):
             mensaje = Correos(message_body=pl.payload.decode('utf-8'))
             mensaje.put()
-			app_mail = "pedidos@v-gutierrez.appspotmail.com"
 
 class MainPage(Handler):
 	def get(self):
@@ -121,13 +121,12 @@ class addHandler(Handler):
 
 config={}
 config['webapp2_extras.sessions'] = {
-	'secret_key':'some-secret-key',
-	}
-app = webapp2.WSGIApplication([
-		('/', MainPage),
-		('/index.html', MainPage),
-		('/agregar/.*.html',addHandler),
-		('.*.html',PageHandler),
-		(MailHandler.mapping()
-	],
-	debug=True,config=config)
+                            	       'secret_key':'some-secret-key',
+                                	}
+app = webapp2.WSGIApplication([('/', MainPage),
+								('/index.html', MainPage),
+								('/agregar/.*.html',addHandler),
+								('.*.html',PageHandler),
+                                (MailHandler.mapping())
+                              ],
+                              debug=True, config=config)
