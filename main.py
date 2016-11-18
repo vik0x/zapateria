@@ -84,7 +84,7 @@ class MailHandler(InboundMailHandler):
 
 class MainPage(Handler):
 	def get(self):
-		self.render('index.html');
+		self.render('index.html')
 		# self.response.out.writ1e("index.html")
 	# def get(self):
 	# 	diccionario = {}
@@ -119,6 +119,23 @@ class addHandler(Handler):
         logging.info('template name ='+str(template_name))
         self.render(template_name)
 
+# class Contacto(Handler):
+#     def get(self):
+#         self.render("views/pedido/pendientes/index.html")
+#     def post(self):
+#         global mail_message
+#         sender_email = self.request.get("email")
+#         logging.info("sender_email: " + sender_email)
+#         message = self.request.get("message")
+#         logging.info("message: " + message)
+#         mail_message.sender = sender_email
+#         mail_message.to = app_mail
+#         mail_message.subject = "Prueba"
+#         mail_message.body = message
+#         mail_message.send()
+#         logging.info("Entra post")
+
+
 config={}
 config['webapp2_extras.sessions'] = {
                             	       'secret_key':'some-secret-key',
@@ -127,6 +144,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
 								('/index.html', MainPage),
 								('/agregar/.*.html',addHandler),
 								('.*.html',PageHandler),
+								#('/contacto',Contacto),
                                 (MailHandler.mapping())
                               ],
                               debug=True, config=config)

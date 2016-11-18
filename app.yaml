@@ -15,10 +15,20 @@ handlers:
 - url: .*
   script: main.app
 
+- url: /_ah/mail/.+
+  script: main.app
+  login: admin
+
+- url: /_ah/mail/app-enige-mail@myapp\.appspotmail\.com
+  script: main.app
+  login: admin
+
 libraries:
 - name: webapp2
   version: "2.5.2"
 
-
 - name: jinja2
   version: "2.6"
+
+inbound_services:
+- mail
