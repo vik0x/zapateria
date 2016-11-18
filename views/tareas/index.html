@@ -1,0 +1,38 @@
+{% extends "layout/principal.html" %}
+{% block titulo %}Tareas{% endblock %}
+{% block contenido %}
+{{response}}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="table-responsive">
+			<table class="table">
+				<tr>
+					<th>Marca</th>
+					<th>Tipo</th>
+					<th>Temporada</th>
+					<th>Material</th>
+					<th>Genero</th>
+					<th>Numero</th>
+					<th>Costo</th>
+					<th>Existencia</th>
+					<th>Opciones</th>
+				</tr>
+				<tbody>
+					<tr>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<a href="/agregar/zapato.html" class="btn btn-circle btn-info"><span class="glyphicon glyphicon-plus"></span></a>
+{% endblock %}
