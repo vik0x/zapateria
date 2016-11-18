@@ -25,13 +25,19 @@ import logging
 import urllib #manipulación de urls
 import urlparse
 from google.appengine.api import mail
+from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 from google.appengine.ext import ndb
 from webapp2_extras import sessions
 from datetime import date
 from webob import Request
 
+mail_message= mail.EmailMessage()
+
 num = random.randint(1,100)
 nom = ""
+
+class Correos(ndb.Model):
+    message_body = ndb.StringProperty()
 
 class user(ndb.Model):
 	usr = ndb.StringProperty()
@@ -68,6 +74,13 @@ class Handler(webapp2.RequestHandler):
 	@webapp2.cached_property
 	def session(self):
 		return self.session_store.get_session()
+
+class MailHandler(InboundMailHandler):
+    def receive(self, mail_message):
+        for content_type, pl in mail_message.bodies('text/plain'):
+            mensaje = Correos(message_body=pl.payload.decode('utf-8'))
+            mensaje.put()
+			app_mail = "pedidos@v-gutierrez.appspotmail.com"
 
 class MainPage(Handler):
 	def get(self):
@@ -114,6 +127,7 @@ app = webapp2.WSGIApplication([
 		('/', MainPage),
 		('/index.html', MainPage),
 		('/agregar/.*.html',addHandler),
-		('.*.html',PageHandler)
+		('.*.html',PageHandler),
+		(MailHandler.mapping()
 	],
 	debug=True,config=config)
