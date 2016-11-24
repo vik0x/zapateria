@@ -25,11 +25,13 @@ import logging
 import urllib #manipulación de urls
 import urlparse
 from google.appengine.api import mail
-from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 from google.appengine.ext import ndb
 from webapp2_extras import sessions
 from datetime import date
 from webob import Request
+from apiclient.discovery import build
+from oauth2client.appengine import OAuth2Decorator
+from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
 global add_ruta
 
@@ -38,6 +40,13 @@ app_mail = "pedidos@v-gutierrez.appspotmail.com"
 
 num = random.randint(1,100)
 nom = ""
+
+#************ oauth2Decorator
+decorator = OAuth2Decorator(
+	client_id='796891516114-8c0uee79a6c0aagb7ltrqf6vhi6lob30.apps.googleusercontent.com',
+	client_secret='SB9JML0U4krnurkK1Tw2ICNx',
+	scope='https://www.googleapis.com/auth/tasks')
+service = build('tasks','v1')
 
 class Correos(ndb.Model):
     message_body = ndb.StringProperty()
@@ -130,15 +139,43 @@ class addHandler(Handler):
             obj.nombre=campo
             obj.put()
 
+class tasks(Handler):
+	@decorator.oauth_required
+	def get(self):
+		tasks=service.tasks().list(tasklist='@default').execute(http=decorator.http())
+		items = tasks.get('items', [])
+		response = '\n'.join([task.get('title','') for task in items])
+		self.render("tareas/index.html", response=items)
+
+# class Contacto(Handler):
+#     def get(self):
+#         self.render("views/pedido/pendientes/index.html")
+#     def post(self):
+#         global mail_message
+#         sender_email = self.request.get("email")
+#         logging.info("sender_email: " + sender_email)
+#         message = self.request.get("message")
+#         logging.info("message: " + message)
+#         mail_message.sender = sender_email
+#         mail_message.to = app_mail
+#         mail_message.subject = "Prueba"
+#         mail_message.body = message
+#         mail_message.send()
+#         logging.info("Entra post")
+
+
+
 config={}
 config['webapp2_extras.sessions'] = {
-                            	       'secret_key':'some-secret-key',
-                                	}
+	   'secret_key':'some-secret-key',
+	}
 app = webapp2.WSGIApplication([('/', MainPage),
-								('/index.html', MainPage),
-								('/agregar/.*.html',addHandler),
-								('.*.html',PageHandler),
-								#('/contacto',Contacto),
-                                (MailHandler.mapping())
-                              ],
-                              debug=True, config=config)
+	('/tareas.html', tasks),
+	('/index.html', MainPage),
+	('/agregar/.*.html',addHandler),
+	('.*.html',PageHandler),
+	#('/contacto',Contacto),
+    (MailHandler.mapping()),
+    (decorator.callback_path, decorator.callback_handler())
+  ],
+  debug=True, config=config)
