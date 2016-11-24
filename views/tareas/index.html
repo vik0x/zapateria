@@ -1,38 +1,26 @@
 {% extends "layout/principal.html" %}
 {% block titulo %}Tareas{% endblock %}
 {% block contenido %}
-{{response}}
 <div class="row">
 	<div class="col-sm-12">
 		<div class="table-responsive">
 			<table class="table">
 				<tr>
-					<th>Marca</th>
-					<th>Tipo</th>
-					<th>Temporada</th>
-					<th>Material</th>
-					<th>Genero</th>
-					<th>Numero</th>
-					<th>Costo</th>
-					<th>Existencia</th>
-					<th>Opciones</th>
+					<th>Tarea</th>
+					<th>Kind</th>
+					<th>Modificada</th>
 				</tr>
 				<tbody>
-					<tr>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-					</tr>
+					{% for data in response %}
+						<tr>
+							<td>{{data.title}}</td>
+							<td>{{data.kind}}</td>
+							<td>{{data.updated}}</td>
+						</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
-<a href="/agregar/zapato.html" class="btn btn-circle btn-info"><span class="glyphicon glyphicon-plus"></span></a>
 {% endblock %}
