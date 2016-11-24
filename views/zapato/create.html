@@ -1,49 +1,56 @@
 {% extends "layout/principal.html" %}
 {% block titulo %}Agregar Zapato{% endblock %}
 {% block contenido %}
-<form action="index.html" method="post">
+<form action="/agregar/zapato.html" method="post">
   <div class="form-group">
 		<label>Marca</label>
-		<select class="form-control">
-			<option>Option 1</option>
+		<select name="marca" class="form-control">
+			<option value="Andrea">Andrea</option>
+			<option value="Levis">Levis</option>
 		</select>
 	</div>
   <div class="form-group">
 		<label>Tipo</label>
-		<select class="form-control">
-			<option>Option 1</option>
+		<select name="tipo" class="form-control">
+      <option value="Botas">Botas</option>
+			<option value="Zapatillas">Zapatillas</option>
 		</select>
 	</div>
   <div class="form-group">
 		<label>Temporada</label>
-		<select class="form-control">
-			<option>Option 1</option>
+		<select name="temporada" class="form-control">
+			<option value="Primavera">Primavera</option>
+			<option value="Verano">Verano</option>
+			<option value="Otoño">Otoño</option>
+			<option value="Invierno">Invierno</option>
 		</select>
 	</div>
   <div class="form-group">
 		<label>Material</label>
-		<select class="form-control">
-			<option>Option 1</option>
+		<select name="material" class="form-control">
+			<option value="Sintetico">Sintetico</option>
+			<option value="Piel">Piel</option>
 		</select>
 	</div>
   <div class="form-group">
 		<label>Género</label>
-		<select class="form-control">
-      <option>M</option>
-			<option>F</option>
+		<select name="genero" class="form-control">
+      <option value="M">M</option>
+			<option value="F">F</option>
 		</select>
 	</div>
   <div class="form-group">
     <label>Número: </label>
-    <input type="number" class="form-control" placeholder="26">
+    <input type="number" name="numero" class="form-control" placeholder="26">
   </div>
   <div class="form-group">
     <label>Costo: </label>
-    <input type="number" class="form-control" placeholder="182.00">
+    <input type="number" name="costo" class="form-control" placeholder="182.00">
   </div>
   <div class="form-group">
     <label>Existencia: </label>
-    <input type="number" class="form-control" placeholder="2">
+    <input type="number" name="existencia" class="form-control" placeholder="2">
   </div>
+  <input type="submit" value="Enviar" class="btn btn-info">
 </form>
 {% endblock %}

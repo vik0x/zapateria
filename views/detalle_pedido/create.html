@@ -1,4 +1,7 @@
-<form action="index.html" method="post">
+{% extends "layout/principal.html" %}
+{% block titulo %}Pedidos{% endblock %}
+{% block contenido %}
+<form action="/agregar/detalle_pedido.html" method="post">
   <div class="form-group">
 		<label>Pedido</label>
 		<select class="form-control">
@@ -16,3 +19,4 @@
     <input type="number" class="form-control">
   </div>
 </form>
+{% endblock %}

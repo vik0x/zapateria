@@ -34,6 +34,14 @@ from oauth2client.appengine import OAuth2Decorator
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 from modelosZapateria import marca
 from modelosZapateria import tipo_calzado
+from modelosZapateria import material_calzado
+from modelosZapateria import temporada
+from modelosZapateria import genero
+from modelosZapateria import zapato
+from modelosZapateria import zapato
+from modelosZapateria import almacen
+from modelosZapateria import pedido
+from modelosZapateria import detalle_pedido
 
 mail_message= mail.EmailMessage()
 app_mail = "pedidos@v-gutierrez.appspotmail.com"
@@ -136,16 +144,29 @@ class addHandler(Handler):
     def post(self):
 		global campo
 		global add_ruta
-		logging.info("si entro")
+		#add_ruta+='()'
+		obj = eval(add_ruta + '()')
 		if(add_ruta=='marca' or add_ruta=='tipo_calzado'):
-			campo= self.request.get('nombre')
-			logging.info(campo)
-			#logging.info(window[add_ruta]())
-			add_ruta+='()'
-			logging.info(add_ruta)
-			obj = eval(add_ruta) #llamar a la clase dependiendo el nombre
-			obj.nombre=campo
-			obj.put()
+			obj.nombre = self.request.get('nombre')
+		elif(add_ruta=='zapato'):
+			logging.info('marca enviada' + self.request.get('marca'))
+			obj.marca= self.request.get('marca')
+			obj.tipo= self.request.get('tipo')
+			obj.temporada= self.request.get('temporada')
+			obj.material= self.request.get('material')
+			obj.genero= self.request.get('genero')
+			obj.numero= self.request.get('numero')
+			obj.costo= self.request.get('costo')
+			obj.existencia= self.request.get('existencia')
+		elif(add_ruta=='almacen'):
+			#zapatos
+			obj.cantidad= self.request.get('cantidad')
+			obj.fecha= self.request.get('fecha')
+		elif(add_ruta=='detalle_pedido'):
+			#pedido
+			#zapato
+			obj.cantidad= self.request.get('cantidad')
+		obj.put()
 
 class tasks(Handler):
 	@decorator.oauth_required
