@@ -32,8 +32,8 @@ from webob import Request
 from apiclient.discovery import build
 from oauth2client.appengine import OAuth2Decorator
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
-
-global add_ruta
+from modelosZapateria import marca
+from modelosZapateria import tipo_calzado
 
 mail_message= mail.EmailMessage()
 app_mail = "pedidos@v-gutierrez.appspotmail.com"
@@ -122,22 +122,30 @@ class PageHandler(Handler):
 
 class addHandler(Handler):
     def extract_template_name_from_request(self):
-        logging.info('ruta = ' +str(self.request.path_info[8:-5]))
-        add_ruta = str(self.request.path_info[1:-5])
-        return self.request.path_info[8:-5]
+		global add_ruta
+		logging.info('ruta = ' +str(self.request.path_info[8:-5]))
+		add_ruta = str(self.request.path_info[9:-5])
+		return self.request.path_info[8:-5]
 
     def get(self):
-        template_name = self.extract_template_name_from_request() + '/create.html'
-        logging.info('template name ='+str(template_name))
-        self.render(template_name)
+		global add_ruta
+		template_name = self.extract_template_name_from_request() + '/create.html'
+		logging.info('template name ='+str(template_name))
+		self.render(template_name)
 
     def post(self):
-        global campo
-        if (add_ruta=='marca' or add_ruta=='tipo_calzado'):
-            campo= self.request.get('nombre')
-            obj = self[add_ruta]() #llamar a la clase dependiendo el nombre
-            obj.nombre=campo
-            obj.put()
+		global campo
+		global add_ruta
+		logging.info("si entro")
+		if(add_ruta=='marca' or add_ruta=='tipo_calzado'):
+			campo= self.request.get('nombre')
+			logging.info(campo)
+			#logging.info(window[add_ruta]())
+			add_ruta+='()'
+			logging.info(add_ruta)
+			obj = eval(add_ruta) #llamar a la clase dependiendo el nombre
+			obj.nombre=campo
+			obj.put()
 
 class tasks(Handler):
 	@decorator.oauth_required

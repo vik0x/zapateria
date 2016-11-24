@@ -1,3 +1,6 @@
+import webapp2
+from google.appengine.ext import ndb
+
 class marca(ndb.Model):
 	nombre = ndb.StringProperty()
 
@@ -24,10 +27,10 @@ class zapato(ndb.Model):
 	existencia = ndb.IntegerProperty()
 
 class almacen(ndb.Model):
-	zapatos = ndb.StructuredProperty(zapatos)
+	zapatos = ndb.StructuredProperty(zapato)
 	cantidad = ndb.IntegerProperty()
 	fecha = ndb.DateTimeProperty()
-	tipo = BooleanProperty()
+	tipo = ndb.BooleanProperty()
 
 class pedido(ndb.Model):
 	mail = ndb.IntegerProperty()
