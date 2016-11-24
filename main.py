@@ -31,6 +31,8 @@ from webapp2_extras import sessions
 from datetime import date
 from webob import Request
 
+global add_ruta
+
 mail_message= mail.EmailMessage()
 app_mail = "pedidos@v-gutierrez.appspotmail.com"
 
@@ -112,6 +114,7 @@ class PageHandler(Handler):
 class addHandler(Handler):
     def extract_template_name_from_request(self):
         logging.info('ruta = ' +str(self.request.path_info[8:-5]))
+        add_ruta = str(self.request.path_info[1:-5])
         return self.request.path_info[8:-5]
 
     def get(self):
@@ -119,22 +122,13 @@ class addHandler(Handler):
         logging.info('template name ='+str(template_name))
         self.render(template_name)
 
-# class Contacto(Handler):
-#     def get(self):
-#         self.render("views/pedido/pendientes/index.html")
-#     def post(self):
-#         global mail_message
-#         sender_email = self.request.get("email")
-#         logging.info("sender_email: " + sender_email)
-#         message = self.request.get("message")
-#         logging.info("message: " + message)
-#         mail_message.sender = sender_email
-#         mail_message.to = app_mail
-#         mail_message.subject = "Prueba"
-#         mail_message.body = message
-#         mail_message.send()
-#         logging.info("Entra post")
-
+    def post(self):
+        global campo
+        if (add_ruta=='marca' or add_ruta=='tipo_calzado'):
+            campo= self.request.get('nombre')
+            obj = self[add_ruta]() #llamar a la clase dependiendo el nombre
+            obj.nombre=campo
+            obj.put()
 
 config={}
 config['webapp2_extras.sessions'] = {
