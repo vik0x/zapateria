@@ -149,23 +149,24 @@ class addHandler(Handler):
 		if(add_ruta=='marca' or add_ruta=='tipo_calzado'):
 			obj.nombre = self.request.get('nombre')
 		elif(add_ruta=='zapato'):
-			logging.info('marca enviada' + self.request.get('marca'))
-			obj.marca= self.request.get('marca')
-			obj.tipo= self.request.get('tipo')
-			obj.temporada= self.request.get('temporada')
-			obj.material= self.request.get('material')
-			obj.genero= self.request.get('genero')
-			obj.numero= self.request.get('numero')
-			obj.costo= self.request.get('costo')
-			obj.existencia= self.request.get('existencia')
+			#logging.info('marca enviada' + self.request.get('marca'))
+			obj.marca= marca(nombre=self.request.get('marca'))
+			obj.tipo= tipo_calzado(nombre=self.request.get('tipo'))
+			obj.temporada= temporada(nombre=self.request.get('temporada'))
+			obj.material= material_calzado(nombre=self.request.get('material'))
+			obj.genero= genero(nombre=self.request.get('genero'))
+			obj.numero= int(self.request.get('numero'))
+			obj.costo= float(self.request.get('costo'))
+			obj.existencia= int(self.request.get('existencia'))
 		elif(add_ruta=='almacen'):
-			#zapatos
-			obj.cantidad= self.request.get('cantidad')
+			#obj.zapatos= zapato()
+			obj.cantidad= int(self.request.get('cantidad'))
 			obj.fecha= self.request.get('fecha')
+			#tipo
 		elif(add_ruta=='detalle_pedido'):
 			#pedido
 			#zapato
-			obj.cantidad= self.request.get('cantidad')
+			obj.cantidad= int(self.request.get('cantidad'))
 		obj.put()
 
 class tasks(Handler):

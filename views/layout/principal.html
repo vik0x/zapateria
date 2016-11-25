@@ -52,8 +52,9 @@
 			</div>
 		</form>
 		<ul class="nav menu">
-			<li class="active"><a href="/index.html"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Inicio</a></li>
-			<li class="parent ">
+			{% set active_page= active_page|default('index') %}
+			<li {% if active_page=="index" %} class="active" {% else %} class="" {% endif %}><a href="/index.html"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Inicio</a></li>
+			<li class="parent">
 				<a >
 					<span data-toggle="collapse" href="#catalogos_dropd"><svg class="glyph stroked chevron-down"><use xlink:href="#stroked-chevron-down"></use></svg> Catálogos del Sistema </span>
 				</a>
@@ -70,9 +71,9 @@
 					</li>
 				</ul>
 			</li>
-			<li><a href="/almacen.html"><svg class="glyph stroked table"><use xlink:href="#stroked-table"/></svg> Almacen</a></li>
-			<li><a href="/zapato.html"><svg class="glyph stroked star"><use xlink:href="#stroked-star"/></svg> Zapatos</a></li>
-			<li class="parent ">
+			<li {% if active_page=="almacen" %} class="active" {% else %} class="" {% endif %} ><a href="/almacen.html"><svg class="glyph stroked table"><use xlink:href="#stroked-table"/></svg> Almacen</a></li>
+			<li {% if active_page=="zapatos" %} class="active" {% else %} class="" {% endif %} ><a href="/zapato.html"><svg class="glyph stroked star"><use xlink:href="#stroked-star"/></svg> Zapatos</a></li>
+			<li class="parent">
 				<a >
 					<span data-toggle="collapse" href="#pedidos_dropd"><svg class="glyph stroked email"><use xlink:href="#stroked-email"/></svg>
  Pedidos </span>
@@ -90,7 +91,7 @@
 					</li>
 				</ul>
 			</li>
-			<li><a href="/tareas.html"><svg class="glyph stroked clipboard with paper"><use xlink:href="#stroked-clipboard-with-paper"/></svg>
+			<li {% if active_page=="tareas" %} class="active" {% else %} class="" {% endif %} ><a href="/tareas.html"><svg class="glyph stroked clipboard with paper"><use xlink:href="#stroked-clipboard-with-paper"/></svg>
  Tareas</a></li>
 			<!-- <li><a href="table.html"><svg class="glyph stroked table"><use xlink:href="#stroked-table"></use></svg> Tables</a></li>
 			<li><a href="forms.html"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg> Forms</a></li>

@@ -20,7 +20,7 @@ class zapato(ndb.Model):
 	marca = ndb.StructuredProperty(marca)
 	tipo = ndb.StructuredProperty(tipo_calzado)
 	temporada = ndb.StructuredProperty(temporada)
-	material= ndb.StructuredProperty(material_calzado, repeated = True)
+	material= ndb.StructuredProperty(material_calzado)#, repeated = True)
 	genero = ndb.StructuredProperty(genero)
 	numero = ndb.IntegerProperty()
 	costo = ndb.FloatProperty()
