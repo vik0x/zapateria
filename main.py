@@ -38,7 +38,6 @@ from modelosZapateria import material_calzado
 from modelosZapateria import temporada
 from modelosZapateria import genero
 from modelosZapateria import zapato
-from modelosZapateria import zapato
 from modelosZapateria import almacen
 from modelosZapateria import pedido
 from modelosZapateria import detalle_pedido
@@ -144,28 +143,29 @@ class addHandler(Handler):
     def post(self):
 		global campo
 		global add_ruta
-		#add_ruta+='()'
 		obj = eval(add_ruta + '()')
 		if(add_ruta=='marca' or add_ruta=='tipo_calzado'):
 			obj.nombre = self.request.get('nombre')
 		elif(add_ruta=='zapato'):
-			#logging.info('marca enviada' + self.request.get('marca'))
-			obj.marca= marca(nombre=self.request.get('marca'))
-			obj.tipo= tipo_calzado(nombre=self.request.get('tipo'))
-			obj.temporada= temporada(nombre=self.request.get('temporada'))
-			obj.material= material_calzado(nombre=self.request.get('material'))
-			obj.genero= genero(nombre=self.request.get('genero'))
+			#Guardado de llave
+			#marca_key= marca.query(marca.nombre==self.request.get('marca')).get()
+			obj.marca = self.request.get('marca')
+			obj.tipo= self.request.get('tipo')
+			obj.temporada= self.request.get('temporada')
+			obj.material= self.request.get('material')
+			obj.genero= self.request.get('genero')
 			obj.numero= int(self.request.get('numero'))
 			obj.costo= float(self.request.get('costo'))
 			obj.existencia= int(self.request.get('existencia'))
 		elif(add_ruta=='almacen'):
-			#obj.zapatos= zapato()
+			#obj.zapatos= zapato() Definir que se va mostrar del zapato -> para desplegar
+			obj.zapatos= self.request.get('zapatos')
 			obj.cantidad= int(self.request.get('cantidad'))
 			obj.fecha= self.request.get('fecha')
-			#tipo
+			obj.tipo= self.request.get('tipo')
 		elif(add_ruta=='detalle_pedido'):
-			#pedido
-			#zapato
+			obj.pedido = self.request.get('pedido')
+			obj.zapato = self.request.get('zapato')
 			obj.cantidad= int(self.request.get('cantidad'))
 		obj.put()
 

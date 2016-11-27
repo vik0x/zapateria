@@ -3,18 +3,27 @@
 {% block contenido %}
 <form action="/agregar/almacen.html" method="post">
   <div class="form-group">
-    <label>Zapatos</label>
-    <select class="form-control">
+    <label for="zapatos" >Zapatos</label>
+    <select name="zapatos" class="form-control">
       <option>Option</option>
     </select>
   </div>
   <div class="form-group">
-    <label>Cantidad: </label>
-    <input type="number" class="form-control">
+    <label for="cantidad">Cantidad: </label>
+    <input type="number" name="cantidad" class="form-control">
   </div>
   <div class="form-group">
-    <label>Fecha: </label>
-    <input type="date" class="form-control" placeholder="06/Jun/2006">
+    <label for="fecha">Fecha: </label>
+    <input type="date" name="fecha"  class="form-control" placeholder="06/Jun/2006">
+  </div>
+  <div class="form-group">
+    <label for="tipo" >Tipo de calzado</label>
+    <select name="tipo" class="form-control">
+      <option>Option</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Enviar" class="btn btn-info">
   </div>
 </form>
 {% endblock %}
