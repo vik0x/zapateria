@@ -1,11 +1,31 @@
-<form action="/_ah/mail/pedidos@v-gutierrez.appspotmail.com" method="POST">
-  <div class="form-group">
-    <label>Correo electrónico: </label>
-    <input type="text" name="email" class="form-control" placeholder="correo@xxx.com">
-  </div>
-  <div class="form-group">
-    <label>Fecha: </label>
-    <input type="text" name="message" class="form-control" placeholder="06/Jun/2006">
-  </div>
-  <input type="submit" name="enviar" value="Enviar">
-</form>
+{% extends "layout/principal.html" %}
+{% block titulo %}Pedidos{% endblock %}
+{% set active_page=  'marca' %}
+{% block css %}
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+{% block contenido %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="table-responsive">
+			<table class="table">
+				<tr>
+					<th>Mail</th>
+					<th>Fecha</th>
+					<th style="width:20%">Estatus</th>
+				</tr>
+				<tbody>
+					{% for item in obj %}
+					<tr>
+						<td>{{item.mail}}</td>
+						<td>{{item.fecha}}</td>
+						<td><a href="#" class="btn btn-default"><i class="fa fa-times" aria-hidden="true"></i></a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<a href="/agregar/marca.html" class="btn btn-circle btn-info"><span class="glyphicon glyphicon-plus"></span></a>
+{% endblock %}

@@ -41,6 +41,7 @@ from modelosZapateria import zapato
 from modelosZapateria import almacen
 from modelosZapateria import pedido
 from modelosZapateria import detalle_pedido
+# from models import marca_model
 
 mail_message= mail.EmailMessage()
 app_mail = "pedidos@v-gutierrez.appspotmail.com"
@@ -125,7 +126,14 @@ class PageHandler(Handler):
     def get(self):
         template_name = self.extract_template_name_from_request() + '/index.html'
         logging.info('template name ='+str(template_name))
-        self.render(template_name)
+        model_n = self.extract_template_name_from_request()
+        if( model_n == 'pedido/pendiente' or model_n == 'pedido/terminado' ):
+        	model_n = 'pedido'
+        # self.response.out.write(model_n)
+        q_model = eval(model_n+'()')
+        d= q_model
+        m= d.all()
+        self.render(template_name,obj=m)
 
 class addHandler(Handler):
     def extract_template_name_from_request(self):
@@ -136,9 +144,27 @@ class addHandler(Handler):
 
     def get(self):
 		global add_ruta
+		ruta = self.extract_template_name_from_request()
+		# self.response.out.write(ruta)
+		data = {}
+		if( ruta == '/almacen' ):
+			z = zapato()
+			t = tipo_calzado()
+			data = {'zapato':z.all(),'tipo':t.all()}
+		if( ruta == '/zapato' ):
+			m = marca()
+			t = tipo_calzado()
+			te = temporada()
+			ma = material_calzado()
+			data = {
+				'marca':m.all(),
+				'tipo':t.all(),
+				'temporada':te.all(),
+				'material':ma.all()
+			}
 		template_name = self.extract_template_name_from_request() + '/create.html'
 		logging.info('template name ='+str(template_name))
-		self.render(template_name)
+		self.render(template_name,data = data)
 
     def post(self):
 		global campo
@@ -168,6 +194,7 @@ class addHandler(Handler):
 			obj.zapato = self.request.get('zapato')
 			obj.cantidad= int(self.request.get('cantidad'))
 		obj.put()
+		self.redirect("/"+add_ruta+".html")
 
 class tasks(Handler):
 	@decorator.oauth_required

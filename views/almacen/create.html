@@ -5,7 +5,9 @@
   <div class="form-group">
     <label for="zapatos" >Zapatos</label>
     <select name="zapatos" class="form-control">
-      <option>Option</option>
+      {% for item in data.zapato %}
+      <option value="{{item.tipo_calzado}}">{{item.nombre}}</option>
+      {% endfor %}
     </select>
   </div>
   <div class="form-group">
@@ -19,11 +21,14 @@
   <div class="form-group">
     <label for="tipo" >Tipo de calzado</label>
     <select name="tipo" class="form-control">
-      <option>Option</option>
+      {% for item in data.tipo %}
+      <option value="{{item.tipo_calzado}}">{{item.nombre}}</option>
+      {% endfor %}
     </select>
   </div>
   <div class="form-group">
     <input type="submit" value="Enviar" class="btn btn-info">
   </div>
-</form>
+</form>hola
+{{data}}
 {% endblock %}

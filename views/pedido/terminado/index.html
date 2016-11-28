@@ -1,0 +1,19 @@
+{% extends "layout/principal.html" %}
+{% block titulo %}Enviar Pedido{% endblock %}
+{% block contenido %}
+<form action="/_ah/mail/pedidos@v-gutierrez.appspotmail.com" method="POST">
+	<div class="row">
+		<div class="col-sm-8 col-sm-offset-2">
+		  	<div class="form-group">
+		    	<label>Correo electrónico: </label>
+			    <input type="text" name="email" class="form-control" placeholder="correo@xxx.com">
+			</div>
+		  	<div class="form-group">
+			    <label>Fecha: </label>
+			    <input type="text" name="message" class="form-control" placeholder="06/Jun/2006">
+		  	</div>
+		  	<input type="submit" name="enviar" value="Enviar" class="btn btn-default">
+		</div>
+	</div>
+</form>
+{% endblock %}
