@@ -24,6 +24,7 @@ import random
 import logging
 import urllib #manipulación de urls
 import urlparse
+import httplib2 #Calendario
 from google.appengine.api import mail
 from google.appengine.ext import ndb
 from webapp2_extras import sessions
@@ -53,8 +54,9 @@ nom = ""
 decorator = OAuth2Decorator(
 	client_id='796891516114-8c0uee79a6c0aagb7ltrqf6vhi6lob30.apps.googleusercontent.com',
 	client_secret='SB9JML0U4krnurkK1Tw2ICNx',
-	scope='https://www.googleapis.com/auth/tasks')
+	scope='https://www.googleapis.com/auth/tasks https://www.googleapis.com/auth/calendar')
 service = build('tasks','v1')
+service_calendar = build('calendar', 'v3')
 
 class Correos(ndb.Model):
     message_body = ndb.StringProperty()
@@ -119,21 +121,32 @@ class dashBoard(Handler):
 		self.render('index.html');
 
 class PageHandler(Handler):
-    def extract_template_name_from_request(self):
-        logging.info('ruta = ' +str(self.request.path_info[1:-5]))
-        return self.request.path_info[1:-5]
+	def extract_template_name_from_request(self):
+		logging.info('ruta = ' +str(self.request.path_info[1:-5]))
+		return self.request.path_info[1:-5]
 
-    def get(self):
-        template_name = self.extract_template_name_from_request() + '/index.html'
-        logging.info('template name ='+str(template_name))
-        model_n = self.extract_template_name_from_request()
-        if( model_n == 'pedido/pendiente' or model_n == 'pedido/terminado' ):
-        	model_n = 'pedido'
-        # self.response.out.write(model_n)
-        q_model = eval(model_n+'()')
-        d= q_model
-        m= d.all()
-        self.render(template_name,obj=m)
+	@decorator.oauth_required
+	def get(self):
+		template_name = self.extract_template_name_from_request() + '/index.html'
+		logging.info('template name ='+str(template_name))
+		model_n = self.extract_template_name_from_request()
+		logging.info(model_n)
+		if(model_n=='calendario'):
+			http= decorator.http()
+			request=service_calendar.events().list(calendarId='primary')
+			response_calendar=request.execute(http=http)
+			logging.info("RESPUESTA" + str(response_calendar))
+			for events in response_calendar['items']:
+				summary=events['summary']
+			self.render(template_name,obj=summary)
+		else:
+			if(model_n == 'pedido/pendiente' or model_n == 'pedido/terminado'):
+				model_n = 'pedido'
+		    # self.response.out.write(model_n)
+			q_model = eval(model_n+'()')
+			d= q_model
+			m= d.all()
+			self.render(template_name,obj=m)
 
 class addHandler(Handler):
     def extract_template_name_from_request(self):
@@ -162,6 +175,14 @@ class addHandler(Handler):
 				'temporada':te.all(),
 				'material':ma.all()
 			}
+		# if(ruta == '/calendario'):
+		# 	http=decorator.http()
+		# 	request=service_calendar.events().list(calendarId='primary')
+		# 	response_calendar=request.execute(http=http)
+		# 	logging.info("RESPUESTA" + str(response_calendar))
+		# 	for events in response_calendar['items']:
+		# 		summary=events['summary']
+		# 	data={'calendario':summary}
 		template_name = self.extract_template_name_from_request() + '/create.html'
 		logging.info('template name ='+str(template_name))
 		self.render(template_name,data = data)

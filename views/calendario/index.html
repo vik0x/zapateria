@@ -1,0 +1,9 @@
+{% extends "layout/principal.html" %}
+{% block titulo %}Calendario{% endblock %}
+{% set active_page=  'calendario' %}
+{% block css %}
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+{% block contenido %}
+Hola, bienvenido a tu calendario de actividades {{obj}}
+{% endblock %}
