@@ -42,6 +42,7 @@ from modelosZapateria import zapato
 from modelosZapateria import almacen
 from modelosZapateria import pedido
 from modelosZapateria import detalle_pedido
+from modelosZapateria import tareas
 # from models import marca_model
 
 mail_message= mail.EmailMessage()
@@ -149,13 +150,13 @@ class PageHandler(Handler):
 			self.render(template_name,obj=m)
 
 class addHandler(Handler):
-    def extract_template_name_from_request(self):
+	def extract_template_name_from_request(self):
 		global add_ruta
 		logging.info('ruta = ' +str(self.request.path_info[8:-5]))
 		add_ruta = str(self.request.path_info[9:-5])
 		return self.request.path_info[8:-5]
 
-    def get(self):
+	def get(self):
 		global add_ruta
 		ruta = self.extract_template_name_from_request()
 		# self.response.out.write(ruta)
@@ -187,11 +188,14 @@ class addHandler(Handler):
 		logging.info('template name ='+str(template_name))
 		self.render(template_name,data = data)
 
-    def post(self):
+	@decorator.oauth_required
+	def post(self):
 		global campo
 		global add_ruta
-		if( add_ruta != 'tareas'):
+		try:
 			obj = eval(add_ruta + '()')
+		except:
+			add_ruta = 'tareas'
 		if(add_ruta=='marca' or add_ruta=='tipo_calzado'):
 			obj.nombre = self.request.get('nombre')
 		elif(add_ruta=='zapato'):
@@ -217,14 +221,35 @@ class addHandler(Handler):
 			obj.cantidad= int(self.request.get('cantidad'))
 		elif(add_ruta == 'tareas'):
 			task = {
-				'title': 'New Task',
-				'notes': 'Please complete me',
-				'due': '2010-10-15T12:00:00.000Z'
+				'title': self.request.get('nombre')
 			}
 			result = service.tasks().insert(tasklist='@default', body=task).execute(http=decorator.http())
 			self.redirect('/tareas.html');
-		obj.put()
-		self.redirect("/"+add_ruta+".html")
+		if(add_ruta != 'tareas'):
+			obj.put()
+			self.redirect("/"+add_ruta+".html")
+
+class deleteHandler(Handler):
+	def extract_template_name_from_request(self):
+		global add_ruta
+		logging.info('ruta = ' +str(self.request.path_info[8:-5]))
+		add_ruta = str(self.request.path_info[9:-5])
+		return self.request.path_info[8:-5]
+
+	@decorator.oauth_required
+	def post(self):
+		global campo
+		global add_ruta
+		try:
+			obj = eval(add_ruta + '()')
+		except:
+			add_ruta = 'tareas'
+		if(add_ruta == 'tareas'):
+			result = service.tasklists().delete(tasklist=self.request.get('idtask')).execute(http=decorator.http())
+			self.redirect('/tareas.html');
+		if(add_ruta != 'tareas'):
+			obj.put()
+			self.redirect("/"+add_ruta+".html")
 
 class tasks(Handler):
 	@decorator.oauth_required
@@ -262,15 +287,16 @@ class tasks(Handler):
 
 config={}
 config['webapp2_extras.sessions'] = {
-	   'secret_key':'some-secret-key',
+   		'secret_key':'some-secret-key',
 	}
 app = webapp2.WSGIApplication([('/', MainPage),
-	('/tareas.html', tasks),
-	('/index.html', MainPage),
-	('/agregar/.*.html',addHandler),
-	('.*.html',PageHandler),
-	#('/contacto',Contacto),
-    (MailHandler.mapping()),
-    (decorator.callback_path, decorator.callback_handler())
-  ],
-  debug=True, config=config)
+		('/tareas.html', tasks),
+		('/index.html', MainPage),
+		('/agregar/.*.html',addHandler),
+		('/eliminar/.*.html',deleteHandler),
+		('.*.html',PageHandler),
+		#('/contacto',Contacto),
+		(MailHandler.mapping()),
+		(decorator.callback_path, decorator.callback_handler())
+	],
+	debug=True, config=config)

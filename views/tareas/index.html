@@ -1,6 +1,9 @@
 {% extends "layout/principal.html" %}
 {% block titulo %}Tareas{% endblock %}
 {% set active_page='tareas' %}
+{% block css %}
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
 {% block contenido %}
 <div class="row">
 	<div class="col-sm-12">
@@ -10,6 +13,7 @@
 					<th>Tarea</th>
 					<th>Kind</th>
 					<th>Modificada</th>
+					<th>Eliminar</th>
 				</tr>
 				<tbody>
 					{% for data in response %}
@@ -17,6 +21,12 @@
 							<td>{{data.title}}</td>
 							<td>{{data.kind}}</td>
 							<td>{{data.updated}}</td>
+							<td>
+								<form action="/eliminar/tareas.html" method="post">
+									<input type="hidden" name="idtask" value="{{data.id}}">
+									<button role="submit" class="btn btn-default"><i class="fa fa-times" aria-hidden="true"></i></button>
+								</form>
+							</td>
 						</tr>
 					{% endfor %}
 				</tbody>
