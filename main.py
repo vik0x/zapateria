@@ -220,7 +220,7 @@ class deleteHandler(Handler):
 			result = service.tasklists().delete(tasklist=self.request.get('idtask')).execute(http=decorator.http())
 			self.redirect('/tareas.html');
 		elif(rm_ruta=='calendario'):
-			result = service_calendar.events().delete(calendarId='primary', eventId='idCal').execute(http=decorator.http())
+			result = service_calendar.events().delete(calendarId='primary', eventId=self.request.get('idcal')).execute(http=decorator.http())
 			self.redirect('/calendario.html');
 		else:
 			self.redirect("/"+rm_ruta+".html")
