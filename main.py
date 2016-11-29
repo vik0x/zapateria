@@ -190,7 +190,8 @@ class addHandler(Handler):
     def post(self):
 		global campo
 		global add_ruta
-		obj = eval(add_ruta + '()')
+		if( add_ruta != 'tareas'):
+			obj = eval(add_ruta + '()')
 		if(add_ruta=='marca' or add_ruta=='tipo_calzado'):
 			obj.nombre = self.request.get('nombre')
 		elif(add_ruta=='zapato'):
@@ -214,6 +215,14 @@ class addHandler(Handler):
 			obj.pedido = self.request.get('pedido')
 			obj.zapato = self.request.get('zapato')
 			obj.cantidad= int(self.request.get('cantidad'))
+		elif(add_ruta == 'tareas'):
+			task = {
+				'title': 'New Task',
+				'notes': 'Please complete me',
+				'due': '2010-10-15T12:00:00.000Z'
+			}
+			result = service.tasks().insert(tasklist='@default', body=task).execute(http=decorator.http())
+			self.redirect('/tareas.html');
 		obj.put()
 		self.redirect("/"+add_ruta+".html")
 
@@ -224,6 +233,14 @@ class tasks(Handler):
 		items = tasks.get('items', [])
 		response = '\n'.join([task.get('title','') for task in items])
 		self.render("tareas/index.html", response=items)
+
+	def post(self):
+		task = {
+			'title': 'New Task',
+			'notes': 'Please complete me',
+			'due': '2010-10-15T12:00:00.000Z'
+		}
+		result = service.tasks().insert(tasklist='@default', body=task).execute(http=decorator.http())
 
 # class Contacto(Handler):
 #     def get(self):

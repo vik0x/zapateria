@@ -1,0 +1,11 @@
+{% extends "layout/principal.html" %}
+{% block titulo %}Agregar Marca{% endblock %}
+{% block contenido %}
+<form action="/agregar/tareas.html" method="post">
+  <div class="form-group">
+    <label for="nombre">Tarea: </label>
+    <input name="nombre" type="text" class="form-control" placeholder="Nombre de la tarea">
+  </div>
+  <input type="submit" value="Enviar" class="btn btn-info">
+</form>
+{% endblock %}
