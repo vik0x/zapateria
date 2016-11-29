@@ -57,3 +57,8 @@ class detalle_pedido(ndb.Model):
 	cantidad = ndb.IntegerProperty()
 	def all(self):
 		return almacen.query().fetch()
+
+class tareas(ndb.Model):
+	nombre = ndb.StringProperty()
+	def all(self):
+		return tareas.query().fetch()

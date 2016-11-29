@@ -1,5 +1,5 @@
 {% extends "layout/principal.html" %}
-{% block titulo %}Calendario{% endblock %}
+{% block titulo %}Recordatorios{% endblock %}
 {% set active_page=  'calendario' %}
 {% block css %}
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -11,12 +11,24 @@
 			<table class="table">
 				<tr>
 					<th>Descripción</th>
-					<!--<th style="width:20%">Opciones</th>-->
+					<th>Inicio</th>
+					<th>Fin</th>
+					<th>Eliminar</th>
 				</tr>
 				<tbody>
+					{% for data in obj%}
 					<tr>
-						<td>{{obj}}</td>
+						<td>{{data.summary}}</td>
+						<td>{{data.start.dateTime}}</td>
+						<td>{{data.end.dateTime}}</td>
+						<td>
+							<form action="/eliminar/calendario.html" method="post">
+								<input type="hidden" name="idtask" value="{{data.id}}">
+								<button role="submit" class="btn btn-default"><i class="fa fa-times" aria-hidden="true"></i></button>
+							</form>
+						</td>
 					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>

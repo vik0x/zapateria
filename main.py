@@ -42,7 +42,7 @@ from modelosZapateria import zapato
 from modelosZapateria import almacen
 from modelosZapateria import pedido
 from modelosZapateria import detalle_pedido
-# from models import marca_model
+from modelosZapateria import tareas
 
 mail_message= mail.EmailMessage()
 app_mail = "pedidos@v-gutierrez.appspotmail.com"
@@ -106,15 +106,6 @@ class MailHandler(InboundMailHandler):
 class MainPage(Handler):
 	def get(self):
 		self.render('index.html')
-		# self.response.out.writ1e("index.html")
-	# def get(self):
-	# 	diccionario = {}
-	# 	diccionario["nombre"] = "El nombre"
-	# 	diccionario["apellido"] = "El buen apellido"
-	# 	self.render("index.html",
-	# 		message="Una variable",
-	# 		dic = diccionario
-	# 		)
 
 class dashBoard(Handler):
 	def get(self):
@@ -135,14 +126,10 @@ class PageHandler(Handler):
 			http= decorator.http()
 			request=service_calendar.events().list(calendarId='primary')
 			response_calendar=request.execute(http=http)
-			logging.info("RESPUESTA" + str(response_calendar))
-			for events in response_calendar['items']:
-				summary=events['summary']
-			self.render(template_name,obj=summary)
+			self.render(template_name,obj=response_calendar['items'])
 		else:
 			if(model_n == 'pedido/pendiente' or model_n == 'pedido/terminado'):
 				model_n = 'pedido'
-		    # self.response.out.write(model_n)
 			q_model = eval(model_n+'()')
 			d= q_model
 			m= d.all()
@@ -151,14 +138,12 @@ class PageHandler(Handler):
 class addHandler(Handler):
 	def extract_template_name_from_request(self):
 		global add_ruta
-		logging.info('ruta = ' +str(self.request.path_info[8:-5]))
 		add_ruta = str(self.request.path_info[9:-5])
 		return self.request.path_info[8:-5]
 
 	def get(self):
 		global add_ruta
 		ruta = self.extract_template_name_from_request()
-		# self.response.out.write(ruta)
 		data = {}
 		if( ruta == '/almacen' ):
 			z = zapato()
@@ -179,16 +164,25 @@ class addHandler(Handler):
 		logging.info('template name ='+str(template_name))
 		self.render(template_name,data = data)
 
+	@decorator.oauth_required
 	def post(self):
 		global campo
 		global add_ruta
 		if(add_ruta=='calendario'):
-		 	event= {
+		 	json= {
 		 		'summary': self.request.get('desc'),
-		 		'start.dateTime': self.request.get('dateTimeStart'),
-		 		'end.dateTime': self.request.get('dateTimeEnd')
+				'start': {'dateTime':self.request.get('dateTimeStart'),'timeZone': 'America/Los_Angeles'},
+				'end': {'dateTime': self.request.get('dateTimeEnd'),'timeZone': 'America/Los_Angeles'}
 			}
-			event = service_calendar.events().insert(calendarId='primary', body=event).execute()
+			httplib2.debuglevel = 4
+			event = service_calendar.events().insert(calendarId='primary', body=json).execute(http=decorator.http())
+			self.redirect('/calendario.html');
+		elif(add_ruta=='tareas'):
+			task = {
+				'title': self.request.get('nombre')
+			}
+			result = service.tasks().insert(tasklist='@default', body=task).execute(http=decorator.http())
+			self.redirect('/tareas.html');
 		else:
 			obj = eval(add_ruta + '()')
 			if(add_ruta=='marca' or add_ruta=='tipo_calzado'):
@@ -214,8 +208,22 @@ class addHandler(Handler):
 				obj.pedido = self.request.get('pedido')
 				obj.zapato = self.request.get('zapato')
 				obj.cantidad= int(self.request.get('cantidad'))
-				obj.put()
-				self.redirect("/"+add_ruta+".html")
+			obj.put()
+			self.redirect("/"+add_ruta+".html")
+
+class deleteHandler(Handler):
+	@decorator.oauth_required
+	def post(self):
+		global rm_ruta
+		rm_ruta = str(self.request.path_info[10:-5])
+		if(rm_ruta=='tareas'):
+			result = service.tasklists().delete(tasklist=self.request.get('idtask')).execute(http=decorator.http())
+			self.redirect('/tareas.html');
+		elif(rm_ruta=='calendario'):
+			result = service_calendar.events().delete(calendarId='primary', eventId='idCal').execute(http=decorator.http())
+			self.redirect('/calendario.html');
+		else:
+			self.redirect("/"+rm_ruta+".html")
 
 class tasks(Handler):
 	@decorator.oauth_required
@@ -225,35 +233,27 @@ class tasks(Handler):
 		response = '\n'.join([task.get('title','') for task in items])
 		self.render("tareas/index.html", response=items)
 
-# class Contacto(Handler):
-#     def get(self):
-#         self.render("views/pedido/pendientes/index.html")
-#     def post(self):
-#         global mail_message
-#         sender_email = self.request.get("email")
-#         logging.info("sender_email: " + sender_email)
-#         message = self.request.get("message")
-#         logging.info("message: " + message)
-#         mail_message.sender = sender_email
-#         mail_message.to = app_mail
-#         mail_message.subject = "Prueba"
-#         mail_message.body = message
-#         mail_message.send()
-#         logging.info("Entra post")
-
+	def post(self):
+		task = {
+			'title': 'New Task',
+			'notes': 'Please complete me',
+			'due': '2010-10-15T12:00:00.000Z'
+		}
+		result = service.tasks().insert(tasklist='@default', body=task).execute(http=decorator.http())
 
 
 config={}
 config['webapp2_extras.sessions'] = {
-	   'secret_key':'some-secret-key',
+   		'secret_key':'some-secret-key',
 	}
 app = webapp2.WSGIApplication([('/', MainPage),
-	('/tareas.html', tasks),
-	('/index.html', MainPage),
-	('/agregar/.*.html',addHandler),
-	('.*.html',PageHandler),
-	#('/contacto',Contacto),
-    (MailHandler.mapping()),
-    (decorator.callback_path, decorator.callback_handler())
-  ],
-  debug=True, config=config)
+		('/tareas.html', tasks),
+		('/index.html', MainPage),
+		('/agregar/.*.html',addHandler),
+		('/eliminar/.*.html',deleteHandler),
+		('.*.html',PageHandler),
+		#('/contacto',Contacto),
+		(MailHandler.mapping()),
+		(decorator.callback_path, decorator.callback_handler())
+	],
+	debug=True, config=config)
