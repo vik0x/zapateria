@@ -5,5 +5,22 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 {% block contenido %}
-Hola, bienvenido a tu calendario de actividades {{obj}}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="table-responsive">
+			<table class="table">
+				<tr>
+					<th>Descripción</th>
+					<!--<th style="width:20%">Opciones</th>-->
+				</tr>
+				<tbody>
+					<tr>
+						<td>{{obj}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<a href="/agregar/calendario.html" class="btn btn-circle btn-info"><span class="glyphicon glyphicon-plus"></span></a>
 {% endblock %}

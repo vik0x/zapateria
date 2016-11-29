@@ -1,0 +1,19 @@
+{% extends "layout/principal.html" %}
+{% block titulo %}Agregar recordatorio{% endblock %}
+{% block contenido %}
+<form action="/agregar/calendario.html" method="post">
+  <div class="form-group">
+    <label for="desc">Recordatorio: </label>
+    <input name="desc" type="text" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="dateTimeStart">Fecha-Hora de inicio: </label>
+    <input type="datetime" name="dateTimeStart" step="1">
+  </div>
+  <div class="form-group">
+    <label for="dateTimeEnd">Fecha-Hora de fin: </label>
+    <input type="datetime" name="dateTimeEnd" step="1">
+  </div>
+  <input type="submit" value="Enviar" class="btn btn-info">
+</form>
+{% endblock %}

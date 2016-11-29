@@ -149,13 +149,13 @@ class PageHandler(Handler):
 			self.render(template_name,obj=m)
 
 class addHandler(Handler):
-    def extract_template_name_from_request(self):
+	def extract_template_name_from_request(self):
 		global add_ruta
 		logging.info('ruta = ' +str(self.request.path_info[8:-5]))
 		add_ruta = str(self.request.path_info[9:-5])
 		return self.request.path_info[8:-5]
 
-    def get(self):
+	def get(self):
 		global add_ruta
 		ruta = self.extract_template_name_from_request()
 		# self.response.out.write(ruta)
@@ -175,47 +175,47 @@ class addHandler(Handler):
 				'temporada':te.all(),
 				'material':ma.all()
 			}
-		# if(ruta == '/calendario'):
-		# 	http=decorator.http()
-		# 	request=service_calendar.events().list(calendarId='primary')
-		# 	response_calendar=request.execute(http=http)
-		# 	logging.info("RESPUESTA" + str(response_calendar))
-		# 	for events in response_calendar['items']:
-		# 		summary=events['summary']
-		# 	data={'calendario':summary}
 		template_name = self.extract_template_name_from_request() + '/create.html'
 		logging.info('template name ='+str(template_name))
 		self.render(template_name,data = data)
 
-    def post(self):
+	def post(self):
 		global campo
 		global add_ruta
-		obj = eval(add_ruta + '()')
-		if(add_ruta=='marca' or add_ruta=='tipo_calzado'):
-			obj.nombre = self.request.get('nombre')
-		elif(add_ruta=='zapato'):
-			#Guardado de llave
-			#marca_key= marca.query(marca.nombre==self.request.get('marca')).get()
-			obj.marca = self.request.get('marca')
-			obj.tipo= self.request.get('tipo')
-			obj.temporada= self.request.get('temporada')
-			obj.material= self.request.get('material')
-			obj.genero= self.request.get('genero')
-			obj.numero= int(self.request.get('numero'))
-			obj.costo= float(self.request.get('costo'))
-			obj.existencia= int(self.request.get('existencia'))
-		elif(add_ruta=='almacen'):
-			#obj.zapatos= zapato() Definir que se va mostrar del zapato -> para desplegar
-			obj.zapatos= self.request.get('zapatos')
-			obj.cantidad= int(self.request.get('cantidad'))
-			obj.fecha= self.request.get('fecha')
-			obj.tipo= self.request.get('tipo')
-		elif(add_ruta=='detalle_pedido'):
-			obj.pedido = self.request.get('pedido')
-			obj.zapato = self.request.get('zapato')
-			obj.cantidad= int(self.request.get('cantidad'))
-		obj.put()
-		self.redirect("/"+add_ruta+".html")
+		if(add_ruta=='calendario'):
+		 	event= {
+		 		'summary': self.request.get('desc'),
+		 		'start.dateTime': self.request.get('dateTimeStart'),
+		 		'end.dateTime': self.request.get('dateTimeEnd')
+			}
+			event = service_calendar.events().insert(calendarId='primary', body=event).execute()
+		else:
+			obj = eval(add_ruta + '()')
+			if(add_ruta=='marca' or add_ruta=='tipo_calzado'):
+				obj.nombre = self.request.get('nombre')
+			elif(add_ruta=='zapato'):
+				#Guardado de llave
+				#marca_key= marca.query(marca.nombre==self.request.get('marca')).get()
+				obj.marca = self.request.get('marca')
+				obj.tipo= self.request.get('tipo')
+				obj.temporada= self.request.get('temporada')
+				obj.material= self.request.get('material')
+				obj.genero= self.request.get('genero')
+				obj.numero= int(self.request.get('numero'))
+				obj.costo= float(self.request.get('costo'))
+				obj.existencia= int(self.request.get('existencia'))
+			elif(add_ruta=='almacen'):
+				#obj.zapatos= zapato() Definir que se va mostrar del zapato -> para desplegar
+				obj.zapatos= self.request.get('zapatos')
+				obj.cantidad= int(self.request.get('cantidad'))
+				obj.fecha= self.request.get('fecha')
+				obj.tipo= self.request.get('tipo')
+			elif(add_ruta=='detalle_pedido'):
+				obj.pedido = self.request.get('pedido')
+				obj.zapato = self.request.get('zapato')
+				obj.cantidad= int(self.request.get('cantidad'))
+				obj.put()
+				self.redirect("/"+add_ruta+".html")
 
 class tasks(Handler):
 	@decorator.oauth_required
