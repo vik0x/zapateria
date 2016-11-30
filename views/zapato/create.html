@@ -1,13 +1,12 @@
 {% extends "layout/principal.html" %}
 {% block titulo %}Agregar Zapato{% endblock %}
 {% block contenido %}
-{{data}}
 <form action="/agregar/zapato.html" method="post">
   <div class="form-group">
 		<label>Marca</label>
 		<select name="marca" class="form-control">
 			{% for item in data.marca %}
-		      	<option value="{{item.marca}}">{{item.nombre}}</option>
+		      	<option value="{{item.nombre}}">{{item.nombre}}</option>
 	      	{% endfor %}
 		</select>
 	</div>
@@ -15,24 +14,24 @@
 		<label>Tipo</label>
 		<select name="tipo" class="form-control">
       		{% for item in data.tipo %}
-		      	<option value="{{item.tipo}}">{{item.nombre}}</option>
+		      	<option value="{{item.nombre}}">{{item.nombre}}</option>
 	      	{% endfor %}
 		</select>
 	</div>
   <div class="form-group">
 		<label>Temporada</label>
 		<select name="temporada" class="form-control">
-			{% for item in data.temporada %}
-		      	<option value="{{item.temporada}}">{{item.nombre}}</option>
-	      	{% endfor %}
+      <option value="Verano">Verano</option>
+      <option value="Invierno">Invierno</option>
+      <option value="Otoño">Otoño</option>
+      <option value="Primavera">Primavera</option>
 		</select>
 	</div>
   <div class="form-group">
 		<label>Material</label>
 		<select name="material" class="form-control">
-			{% for item in data.material %}
-		      	<option value="{{item.marca}}">{{item.nombre}}</option>
-	      	{% endfor %}
+	     <option value="Piel">Piel</option>
+	     <option value="Sintetico">Sintetico</option>
 		</select>
 	</div>
   <div class="form-group">

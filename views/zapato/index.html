@@ -15,20 +15,20 @@
 					<th>Numero</th>
 					<th>Costo</th>
 					<th>Existencia</th>
-					<th>Opciones</th>
 				</tr>
 				<tbody>
+					{% for item in obj%}
 					<tr>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
+						<th>{{item.marca}}</th>
+						<th>{{item.tipo}}</th>
+						<th>{{item.temporada}}</th>
+						<th>{{item.material}}</th>
+						<th>{{item.genero}}</th>
+						<th>{{item.numero}}</th>
+						<th>{{item.costo}}</th>
+						<th>{{item.existencia}}</th>
 					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
